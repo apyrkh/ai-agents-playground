@@ -1,8 +1,9 @@
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-import { BusinessContextSchema } from "../schemas/business_context";
 import { model } from "../config/model";
+import { GraphState } from "../graph/state";
+import { BusinessContextSchema } from "../schemas/business_context";
 
-export async function inputInterpreterAgent(state) {
+export async function inputInterpreterAgent(state: typeof GraphState) {
   console.log("Input Interpreter Agent working...");
 
   const systemMessage = new SystemMessage(`

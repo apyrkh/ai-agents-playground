@@ -1,8 +1,9 @@
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { model } from "../config/model";
+import { GraphState } from "../graph/state";
 import { ExpandedContextSchema } from "../schemas/expanded_context";
 
-export async function contextExpansionAgent(state) {
+export async function contextExpansionAgent(state: typeof GraphState) {
   const base = state.businessContext;
   if (!base) {
     console.log("Context Expansion: no base context — skipping.");
