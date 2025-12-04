@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "agent": "./src/app.ts:agentGraph" 
+  },
+  "env": ".env"
+}
