@@ -1,4 +1,5 @@
 export async function useCaseGenerationAgent(state) {
-  console.log("Mock use case generation agent");
+  console.log("Use Case Generation Agent working...");
+
   return {};
 }
