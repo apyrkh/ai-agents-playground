@@ -1,4 +1,4 @@
-import { StateGraph, START, END } from "@langchain/langgraph";
+import { StateGraph, START, END, MemorySaver } from "@langchain/langgraph";
 import { GraphState } from "./state";
 
 import { inputInterpreterAgent } from "../agents/input_interpreter";
@@ -19,5 +19,7 @@ export function buildGraph() {
     .addEdge("use_case_generation", "portfolio_orchestrator")
     .addEdge("portfolio_orchestrator", END);
 
-  return graph.compile();
+  const memory = new MemorySaver();
+
+  return graph.compile({ checkpointer: memory });
 }
