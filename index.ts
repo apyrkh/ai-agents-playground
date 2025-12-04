@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 import { run } from "./src/demo";
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 run();

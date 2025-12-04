@@ -1,23 +1,33 @@
-import { model } from "../config/model";
+import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { BusinessContextSchema } from "../schemas/business_context";
+import { model } from "../config/model";
 
 export async function inputInterpreterAgent(state) {
-  const structured = model.withStructuredOutput(BusinessContextSchema);
+  console.log("Input Interpreter Agent working...");
 
-  const prompt = `
-    Extract:
-    - industry
-    - functional area
-    - strategic goal (if any)
-    - user constraints
+  const systemMessage = new SystemMessage(`
+You are an expert Context Extractor AI, specialized in business requirements analysis.
+Your sole purpose is to rigorously analyze the user's raw request and extract the specific, high-level business parameters, strictly conforming to the defined schema.
 
-    User request: "${state.rawInput}"
-  `;
+Extraction Rules:
+1.  **industry:** Determine the sector (e.g., 'Finance', 'Logistics', 'E-commerce'). Use 'General Business' if the context is vague.
+2.  **functional_area:** Determine the specific functional domain or department (e.g., 'Human Resources (HR)', 'Supply Chain', 'Procurement'). Use 'Operations' if the context is vague.
+3.  **strategic_goals:** Extract all explicit and implied key objectives the user wants to achieve (e.g., 'reduce operational costs', 'automate data entry').
+4.  **constraints:** Extract all limitations, required integrations, or compliance necessities mentioned (e.g., 'must integrate with SAP', 'GDPR compliance required', 'limited initial budget').
+`);
+
+  const userMessage = new HumanMessage(
+    "User request: " +
+    state.rawInput
+  );
 
   try {
-    const res = await structured.invoke(prompt);
-    return { businessContext: res };
-  } catch {
+    const llm = model.withStructuredOutput(BusinessContextSchema);
+    const result = await llm.invoke([systemMessage, userMessage]);
+
+    return { businessContext: result };
+  } catch (err) {
+    console.error("Input Interpretation Error:", err);
     return { businessContext: null };
   }
 }
