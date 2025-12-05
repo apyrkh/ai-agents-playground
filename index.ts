@@ -8,9 +8,9 @@ const rl = readline.createInterface({
 
 console.log(`
 ---
-WELCOME TO THE AI USE CASE EXPLORER
+WELCOME TO THE AI USE CASE PORTFOLIO EXPLORER
 ---
-I am your AGENTIC INTERPRETER, designed to search for and generate detailed use cases of Artificial Intelligence across various industries.
+I translate your request into a structured portfolio of strategic AI use cases—organized by business value, implementation feasibility, and relevance to the industry and functional domain.
 
 HOW IT WORKS:
 1.  You describe your TASK, INDUSTRY, and OBJECTIVE.
@@ -22,15 +22,25 @@ HOW IT WORKS:
 ---
 ### EXAMPLE QUERIES:
 
-* Find 5 use cases in the BANKING SECTOR for improving the EFFICIENCY of credit analysts.
+* Find use cases in the BANKING SECTOR for improving the EFFICIENCY of credit analysts.
 * Show me how AI models are being used in the GREEN ENERGY sector for WORKFLOW OPTIMIZATION and mitigating OPERATIONAL RISKS.
-* Generate 10 examples of COMPUTER VISION application in MANUFACTURING with a focus on QUALITY CONTROL and PREDICTIVE MAINTENANCE.
+* Generate examples of COMPUTER VISION application in MANUFACTURING with a focus on QUALITY CONTROL and PREDICTIVE MAINTENANCE.
 * I need use cases for SALES AUTOMATION in E-COMMERCE, specifically relating to PERSONALIZATION and RECOMMENDATION SYSTEMS.
 ---
 `);
 
 console.log();
 rl.question("User: ", async (input) => {
-  await run(input.trim());
+  console.log();
+
+  const result = await run(input.trim());
+
+  console.log();
+  console.log("===== Result =====");
+  console.log();
+  console.log("User Request:", result.rawInput);
+  console.log();
+  console.log("Use Cases:", JSON.stringify(result.portfolio, null, 2));
+
   rl.close();
 });

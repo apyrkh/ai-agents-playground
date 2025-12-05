@@ -1,14 +1,35 @@
-export async function portfolioOrchestrator(state) {
-  console.log("Portfolio Orchestration Agent working...");
+import { StateType } from "../graph/state";
+import { UseCase } from "../schemas/use_cases";
 
-  console.log();
-  console.log("----- Current State -----");
-  console.log();
-  console.log("User Raw Input:", state.rawInput);
-  console.log();
-  console.log("Business Context:", JSON.stringify(state.businessContext, null, 2));
-  console.log();
-  console.log("Expanded Context:", JSON.stringify(state.expandedContext, null, 2));
+export async function portfolioOrchestrator(state: StateType) {
+  const useCases = state.useCases;
+  if (!useCases || !Array.isArray(useCases)) {
+    console.log("Portfolio Orchestrator: no use cases — skipping.");
+    return {};
+  }
 
-  return {};
+  console.log("Portfolio Orchestrator Agent working...");
+
+  const quickWin: UseCase[] = [];
+  const strategicBet: UseCase[] = [];
+
+  for (const uc of useCases) {
+    const bv = uc.business_value;
+    const cx = uc.complexity;
+    const ttv = uc.time_to_value;
+
+    const isQuick =
+      (cx === "low" || cx === "medium") &&
+      (bv === "medium" || bv === "high") &&
+      (ttv === "short" || ttv === "medium");
+
+    isQuick ? quickWin.push(uc) : strategicBet.push(uc);
+  }
+
+  return {
+    portfolio: {
+      strategic_bet: strategicBet,
+      quick_win: quickWin
+    }
+  };
 }
