@@ -1,7 +1,7 @@
 # AI Agents Playground
 
 <p align="center">
-  <img src="./docs/assets/diagram.png" width="600" alt="Architecture diagram" />
+  <img src="./docs/diagram.png" width="600" alt="Architecture diagram" />
 </p>
 
 ## Agentic AI Demo
