@@ -6,7 +6,7 @@
 
 ## Agentic AI Demo
 
-This project showcases a lightweight multi-agent setup for structured information extraction and AI use-case generation from natural language inputs.  
+This project showcases a lightweight multi-agent setup for structured information extraction and AI use-case generation from natural language inputs.
 Agents parse the user request, extract intents, work with prepared/mock data, and produce a structured output — from quick wins to strategic bets.
 
 Designed to demonstrate agentic capabilities without heavy infra (no RAG, no vector DB).
