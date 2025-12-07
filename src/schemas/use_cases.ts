@@ -14,9 +14,9 @@ export const UseCaseSchema = z.object({
   time_to_value: z.enum(["short", "medium", "long"]),
 });
 
-export const UseCaseListSchema = z.object({
+export const UseCaseGenerationResultSchema = z.object({
   use_cases: z.array(UseCaseSchema),
 });
 
 export type UseCase = z.infer<typeof UseCaseSchema>;
-export type UseCaseList = z.infer<typeof UseCaseListSchema>["use_cases"];
+export type UseCaseList = z.infer<typeof UseCaseGenerationResultSchema>["use_cases"];

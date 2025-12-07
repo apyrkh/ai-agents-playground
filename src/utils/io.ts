@@ -42,10 +42,8 @@ export const printWelcome = () => {
 
   printEmptyLine();
 
-  printSection("I translate your request into a structured portfolio of AI use cases — prioritized by business value, feasibility, and domain relevance.\n");
-
-  printSection("How it works:");
-  printLine(`${chalk.dim("1.")} You describe your task, industry, and objective.`);
+  printSection("It translates your request into a structured portfolio of AI use cases — prioritized by business value, feasibility, and domain relevance:");
+  printLine(`${chalk.dim("1.")} Describe your task, industry, and objective.`);
   printLine(`${chalk.dim("2.")} The interpretation agent extracts structured parameters.`);
   printLine(`${chalk.dim("3.")} The context expansion agent adds KPIs, workflows, and risks.`);
   printLine(`${chalk.dim("4.")} The use case generation agent proposes relevant ideas.`);
@@ -63,10 +61,17 @@ export const printWelcome = () => {
 }
 
 export const printInputHint = () => {
-  printLine("Please enter your request below:");
+  printLine(chalk.bold("Please enter your message:"));
 }
 
 export const inputPrompt = `${" ".repeat(indent - 2)}> `;
+
+export const printAiMessage = (message: string) => {
+  printEmptyLine();
+  printLine(chalk.bold("AI Assistant:"));
+  printLine(chalk.italic(message));
+  printEmptyLine();
+};
 
 export const printResult = (state: StateType) => {
   const { businessContext, portfolio } = state;
@@ -89,8 +94,8 @@ export const printResult = (state: StateType) => {
   printSection("Context interpreted");
   printBulletLine(`Industry: ${chalk.cyan(businessContext.industry)}`);
   printBulletLine(`Functionality: ${chalk.cyan(businessContext.functional_area)}`);
-  printBulletLine(`Primary objectives: ${chalk.cyan(businessContext.strategic_goals.join(", "))}`);
-  printBulletLine(`Constraints: ${chalk.cyan(businessContext.constraints.join(", ")) || "n/a"}`);
+  printBulletLine(`Primary objectives: ${chalk.cyan(businessContext.strategic_goals.join(", ") || "n/a")}`);
+  printBulletLine(`Constraints: ${chalk.cyan(businessContext.constraints.join(", ") || "n/a")}`);
 
   printEmptyLine();
 
@@ -122,7 +127,6 @@ const printUseCases = (title: string, arr: NonNullable<StateType["portfolio"]>["
   printEmptyLine();
 
   if (arr.length === 0) {
-    printLine(chalk.dim("(none)"));
     return;
   }
 

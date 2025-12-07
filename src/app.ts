@@ -6,6 +6,6 @@ export const run = (userInput: string) => {
   const config = { configurable: { thread_id: "1" } };
 
   return agentGraph.invoke({
-    rawInput: userInput,
+    userInput: userInput,
   }, config);
 };

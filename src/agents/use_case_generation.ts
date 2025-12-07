@@ -1,7 +1,7 @@
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { model } from "../config/model";
 import { StateType } from "../graph/state";
-import { UseCaseListSchema } from "../schemas/use_cases";
+import { UseCaseGenerationResultSchema } from "../schemas/use_cases";
 import { logAgent } from "../utils/log";
 
 export async function useCaseGenerationAgent(state: StateType) {
@@ -44,7 +44,7 @@ Generation Rules:
   );
 
   try {
-    const llm = model.withStructuredOutput(UseCaseListSchema);
+    const llm = model.withStructuredOutput(UseCaseGenerationResultSchema);
     const result = await llm.invoke([systemMessage, userMessage]);
 
     return { useCases: result.use_cases };

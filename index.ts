@@ -1,6 +1,7 @@
+import { AIMessage } from "@langchain/core/messages";
 import * as readline from "readline";
 import { run } from "./src/app";
-import { inputPrompt, printEmptyLine, printInputHint, printResult, printWelcome } from "./src/utils/io";
+import { inputPrompt, printAiMessage, printEmptyLine, printInputHint, printResult, printWelcome } from "./src/utils/io";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -9,14 +10,23 @@ const rl = readline.createInterface({
 
 console.clear();
 printWelcome();
-printInputHint();
 
-rl.question(inputPrompt, async (input) => {
-  printEmptyLine();
+const chatLoop = () => {
+  printInputHint();
+  rl.question(inputPrompt, async (input) => {
+    printEmptyLine();
 
-  const result = await run(input.trim());
+    const result = await run(input.trim());
+    const askUser = AIMessage.isInstance(result.messages[result.messages.length - 1]);
+    if (askUser) {
+      printAiMessage(result.messages[result.messages.length - 1].content.toString());
+      return chatLoop();
+    }
 
-  printResult(result);
+    printResult(result);
+    rl.close();
+  });
+};
 
-  rl.close();
-});
+// Start the chat loop
+chatLoop();
