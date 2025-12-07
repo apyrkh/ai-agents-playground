@@ -1,15 +1,18 @@
 # AI Agents Playground
 
-- setup `.evn`
+## 📦 Installation
 
+1. setup `.evn`
 ```
 GOOGLE_API_KEY=YOUR_API_KEY_HERE
 OPENAI_API_KEY=YOUR_OPENAI_API_KEY_HERE
 ```
 
-- `npm install`
+2.  Install the necessary dependencies:
+    `npm install`
 
-- `npm run demo`
+3.  Start demo:
+    `npm run demo`
 
 ## 🔑 How to Get an OpenAI (ChatGPT) API Key
 
