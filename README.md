@@ -1,5 +1,12 @@
 # AI Agents Playground
 
+## Agentic AI Demo
+
+This project showcases a lightweight multi-agent setup for structured information extraction and AI use-case generation from natural language inputs.  
+Agents parse the user request, identify key intents, work with prepared or mock data, and produce a structured output — from quick wins to strategic bets.
+
+The demo is designed to illustrate the capabilities of an agentic approach without heavy infrastructure (no RAG, no vector DB, etc.).
+
 ## 📦 How to Run the Demo
 
 1. setup `.evn`
