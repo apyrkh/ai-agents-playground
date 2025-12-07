@@ -1,14 +1,15 @@
 import { StateType } from "../graph/state";
 import { UseCase } from "../schemas/use_cases";
+import { logAgent } from "../utils/log";
 
 export async function portfolioOrchestrator(state: StateType) {
   const useCases = state.useCases;
   if (!useCases || !Array.isArray(useCases)) {
-    console.log("Portfolio Orchestrator: no use cases — skipping.");
+    logAgent("Portfolio Orchestrator: no use cases — skipping.");
     return {};
   }
 
-  console.log("Portfolio Orchestrator Agent working...");
+  logAgent("Portfolio Orchestrator Agent working...");
 
   const quickWin: UseCase[] = [];
   const strategicBet: UseCase[] = [];

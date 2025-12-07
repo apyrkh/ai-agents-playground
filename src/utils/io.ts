@@ -71,9 +71,9 @@ export const inputPrompt = `${" ".repeat(indent - 2)}> `;
 export const printResult = (state: StateType) => {
   const { businessContext, portfolio } = state;
   if (!businessContext || !portfolio) {
-    printLine(chalk.red(
-      "Incomplete state. Business context or portfolio is missing."
-    ));
+    printEmptyLine();
+    printLine(chalk.red("Incomplete state. Business context or portfolio is missing."));
+    printEmptyLine();
     return;
   }
 

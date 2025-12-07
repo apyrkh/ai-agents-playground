@@ -25,4 +25,12 @@ export const openAi = new ChatOpenAI({
 });
 
 
-export const model = gemini;
+export const mockModel = {
+  withStructuredOutput: <T>(schema: T) => ({
+    invoke: async (messages: any[]): Promise<T> => {
+      return {} as T;
+    },
+  }),
+};
+
+export const model = openAi;

@@ -2,9 +2,10 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { model } from "../config/model";
 import { StateType } from "../graph/state";
 import { BusinessContextSchema } from "../schemas/business_context";
+import { logAgent } from "../utils/log";
 
 export async function inputInterpreterAgent(state: StateType) {
-  console.log("Input Interpreter Agent working...");
+  logAgent("Input Interpreter Agent working...");
 
   const systemMessage = new SystemMessage(`
 You are an expert Context Extractor AI, specialized in business requirements analysis.

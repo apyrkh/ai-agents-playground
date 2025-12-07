@@ -2,15 +2,16 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { model } from "../config/model";
 import { StateType } from "../graph/state";
 import { ExpandedContextSchema } from "../schemas/expanded_context";
+import { logAgent } from "../utils/log";
 
 export async function contextExpansionAgent(state: StateType) {
   const base = state.businessContext;
   if (!base) {
-    console.log("Context Expansion: no base context — skipping.");
+    logAgent("Context Expansion: no base context — skipping.");
     return {};
   }
 
-  console.log("Context Expansion Agent working...");
+  logAgent("Context Expansion Agent working...");
 
   const systemMessage = new SystemMessage(`
 You are a Context Expansion Agent specialized in detailing and enriching high-level business analysis.

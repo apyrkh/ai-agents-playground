@@ -2,14 +2,15 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { model } from "../config/model";
 import { StateType } from "../graph/state";
 import { UseCaseListSchema } from "../schemas/use_cases";
+import { logAgent } from "../utils/log";
 
 export async function useCaseGenerationAgent(state: StateType) {
   if (!state.expandedContext) {
-    console.log("Use Case Generation: no expanded context — skipping.");
+    logAgent("Use Case Generation: no expanded context — skipping.");
     return {};
   }
 
-  console.log("Use Case Generation Agent working...");
+  logAgent("Use Case Generation Agent working...");
 
   const systemMessage = new SystemMessage(`
 You are an AI Use Case Generator.
@@ -46,7 +47,7 @@ Generation Rules:
     const llm = model.withStructuredOutput(UseCaseListSchema);
     const result = await llm.invoke([systemMessage, userMessage]);
 
-    return { useCases: result };
+    return { useCases: result.use_cases };
   } catch (err) {
     console.error("Use Case Generation Error:", err);
     return {};
