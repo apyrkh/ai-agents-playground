@@ -1,26 +1,13 @@
 import chalk from "chalk";
 import { StateType } from "../graph/state";
 
-const section = chalk.bold;
+const indent = 2;
+const padding = " ".repeat(indent);
 const bullet = chalk.dim("• ");
-
-export const printEmptyLine = () => console.log();
-
-const padding = " ".repeat(3);
-
-export const logInfo = (message: string) => {
-  console.log(chalk.blue(`Info: ${message}`));
-}
-export const logWarning = (message: string) => {
-  console.warn(chalk.yellow(`Warning: ${message}`));
-}
-export const logError = (message: string) => {
-  console.error(chalk.dim.red(`Error: ${message}`));
-}
 
 const printDisclaimer = () => {
   console.warn(
-    `${padding}${chalk.dim.italic.red("This is a demo version. Results may vary and are not guaranteed to be accurate.\n")}`
+    `${padding}${chalk.dim.italic.red("*This is a demo version. Results may vary and are not guaranteed to be accurate.")}`
   );
 }
 
@@ -36,17 +23,25 @@ const printHeader = (text: string) => {
 }
 
 const printSection = (text: string) => {
-  console.log(`${padding}> ${chalk.bold(text)}`);
+  console.log(`${padding}# ${chalk.bold(text)}`);
 }
 
 const printLine = (text: string) => {
   console.log(`${padding}${text}`);
 }
 
-export const printWelcome = () => {
+const printBulletLine = (text: string) => {
+  console.log(`${padding}${bullet}${text}`);
+};
 
+export const printEmptyLine = () => console.log();
+
+export const printWelcome = () => {
   printHeader("Welcome to the AI Use Case Portfolio Explorer");
   printDisclaimer();
+
+  printEmptyLine();
+
   printSection("I translate your request into a structured portfolio of AI use cases — prioritized by business value, feasibility, and domain relevance.\n");
 
   printSection("How it works:");
@@ -67,10 +62,18 @@ export const printWelcome = () => {
   printEmptyLine();
 }
 
-export function printPortfolio(state: StateType) {
+export const printInputHint = () => {
+  printLine("Please enter your request below:");
+}
+
+export const inputPrompt = `${" ".repeat(indent - 2)}> `;
+
+export const printResult = (state: StateType) => {
   const { businessContext, portfolio } = state;
   if (!businessContext || !portfolio) {
-    logError("Incomplete state. Business context or portfolio is missing.");
+    printLine(chalk.red(
+      "Incomplete state. Business context or portfolio is missing."
+    ));
     return;
   }
 
@@ -79,33 +82,24 @@ export function printPortfolio(state: StateType) {
   const total = quick.length + strategic.length;
 
   printHeader("Your AI Use-Case Portfolio Is Ready");
+  printDisclaimer();
 
-  console.log(
-    section(
-      `Tailored portfolio for the ${businessContext.functional_area} function in ${businessContext.industry}.\n`
-    )
-  );
+  printEmptyLine();
 
-  console.log(section("Context interpreted"));
-  console.log(
-    `${bullet}Industry: ${chalk.cyan(businessContext.industry)}\n` +
-    `${bullet}Functionality: ${chalk.cyan(
-      businessContext.functional_area
-    )}\n` +
-    `${bullet}Primary objectives: ${chalk.cyan(
-      businessContext.strategic_goals.join(", ")
-    )}\n` +
-    `${bullet}Constraints: ${chalk.cyan(
-      businessContext.constraints.join(", ")
-    )}\n`
-  );
+  printSection("Context interpreted");
+  printBulletLine(`Industry: ${chalk.cyan(businessContext.industry)}`);
+  printBulletLine(`Functionality: ${chalk.cyan(businessContext.functional_area)}`);
+  printBulletLine(`Primary objectives: ${chalk.cyan(businessContext.strategic_goals.join(", "))}`);
+  printBulletLine(`Constraints: ${chalk.cyan(businessContext.constraints.join(", ")) || "n/a"}`);
 
-  console.log(section("Portfolio summary"));
-  console.log(
-    `${bullet}Total use cases: ${chalk.green(total)}\n` +
-    `${bullet}Quick Wins: ${chalk.green(quick.length)}\n` +
-    `${bullet}Strategic Bets: ${chalk.green(strategic.length)}\n`
-  );
+  printEmptyLine();
+
+  printSection("Portfolio summary");
+  printBulletLine(`Total use cases: ${chalk.green(total)}`);
+  printBulletLine(`Quick Wins: ${chalk.green(quick.length)}`);
+  printBulletLine(`Strategic Bets: ${chalk.green(strategic.length)}`);
+
+  printEmptyLine();
 
   printUseCases("Quick Wins", quick);
   printUseCases("Strategic Bets", strategic);
@@ -117,49 +111,37 @@ export function printPortfolio(state: StateType) {
   );
 }
 
-function printUseCases(title: string, arr: StateType["portfolio"]["quick_win"]) {
-  const bullet = chalk.dim("• ");
-  console.log(chalk.bold.underline(`${title} (${arr.length})`));
+const colorLevel = (v: string) => {
+  if (v === "high") return chalk.green(v);
+  if (v === "medium") return chalk.yellow(v);
+  return chalk.red(v);
+}
+
+const printUseCases = (title: string, arr: NonNullable<StateType["portfolio"]>["quick_win"]) => {
+  printSection(`${title} (${arr.length})`);
+  printEmptyLine();
+
   if (arr.length === 0) {
-    console.log(chalk.dim("  (none)\n"));
+    printLine(chalk.dim("(none)"));
     return;
   }
 
   arr.forEach((uc, i) => {
-    console.log(chalk.bold(`\n#${i + 1} ${uc.title}`));
-    console.log(chalk.italic(uc.description));
-    console.log(
-      `${bullet}Problem: ${chalk.cyan(uc.problem_addressed.join(", "))}`
-    );
-    console.log(
-      `${bullet}Inputs: ${chalk.cyan(uc.required_inputs.join(", "))}`
-    );
-    console.log(
-      `${bullet}Workflow fit: ${chalk.cyan(uc.workflow_fit.join(", "))}`
-    );
-    console.log(
-      `${bullet}Expected KPI: ${chalk.cyan(
-        uc.expected_kpi_impact.join(", ")
-      )}`
-    );
-    console.log(
-      `${bullet}Risks: ${chalk.cyan(uc.risks_or_limitations.join(", "))}`
-    );
-    console.log(
-      `${bullet}Integrations: ${chalk.cyan(
-        uc.enterprise_integrations.join(", ")
-      )}`
-    );
-    console.log(
-      `${bullet}Business value: ${colorLevel(uc.business_value)} | Complexity: ${colorLevel(
-        uc.complexity
-      )} | Time: ${colorLevel(uc.time_to_value)}\n`
-    );
-  });
-}
+    printLine(chalk.bold(`#${i + 1} ${uc.title}`));
+    printLine(chalk.italic(uc.description));
 
-function colorLevel(v: string) {
-  if (v === "high") return chalk.green(v);
-  if (v === "medium") return chalk.yellow(v);
-  return chalk.red(v);
+    printBulletLine(`Problem: ${chalk.cyan(uc.problem_addressed.join(", "))}`);
+    printBulletLine(`Inputs: ${chalk.cyan(uc.required_inputs.join(", "))}`);
+    printBulletLine(`Workflow fit: ${chalk.cyan(uc.workflow_fit.join(", "))}`);
+    printBulletLine(`Expected KPI: ${chalk.cyan(uc.expected_kpi_impact.join(", "))}`);
+    printBulletLine(`Risks: ${chalk.cyan(uc.risks_or_limitations.join(", "))}`);
+    printBulletLine(`Integrations: ${chalk.cyan(uc.enterprise_integrations.join(", "))}`);
+
+    printBulletLine(
+      `Business value: ${colorLevel(uc.business_value)} | ` +
+      `Complexity: ${colorLevel(uc.complexity)} | ` +
+      `Time: ${colorLevel(uc.time_to_value)}`
+    );
+    printEmptyLine();
+  });
 }

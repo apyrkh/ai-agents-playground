@@ -12,5 +12,5 @@ To use the AI features, you'll need an API key from Google AI Studio.
 3.  **Place** the key in your project's **`.env`** file like this:
 
     ```bash
-    GOOGLE_API_KEY="YOUR_API_KEY_HERE"
+    GOOGLE_API_KEY=YOUR_API_KEY_HERE
     ```
