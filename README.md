@@ -1,6 +1,6 @@
 # AI Agents Playground
 
-## 📦 Installation
+## 📦 How to Run the Demo
 
 1. setup `.evn`
 ```
@@ -19,7 +19,7 @@ OPENAI_API_KEY=YOUR_OPENAI_API_KEY_HERE
 1.  **Go to:**
     `https://platform.openai.com/api-keys`
 
-2.  Click the **"+ Create new secret key"** button.
+2.  **Create** a new API key.
 
 ## 🔑 How to Get a Gemini (Google) API Key
 
