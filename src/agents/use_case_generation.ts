@@ -13,34 +13,42 @@ export async function useCaseGenerationAgent(state: StateType) {
   logAgent("Use Case Generation Agent working...");
 
   const systemMessage = new SystemMessage(`
-You are an AI Use Case Generator.
-Your task: generate a set of concrete, realistic, enterprise-grade AI use cases.
+You are an AI Use Case Generator for enterprise environments.
 
-Input: Expanded business context (functional area, pain points, KPIs, workflows, key processes, risk areas, data landscape, constraints).
+Your task: produce 4–6 concrete, realistic AI use cases.
 
-Generation Rules:
-1. Produce 4–6 use cases.
-2. Each use case must include:
-   - **title**: short, specific.
-   - **description**: 2–3 sentences describing how AI solves a problem.
-   - **problem_addressed**: which pain point(s) it resolves.
-   - **required_inputs**: list of data needed (from data_landscape).
-   - **workflow_fit**: which standard workflow patterns align with this use case.
-   - **expected_kpi_impact**: which KPIs should improve and why.
-   - **risks_or_limitations**: short realistic list.
-   - **enterprise_integrations**: which integrations matter.
-   - **business_value**: one of (low | medium | high).
-   - **complexity**: one of (low | medium | high).
-   - **time_to_value**: one of (short | medium | long).
+Inputs:
+- businessContext: { industry, functional_area, strategic_goals, constraints }
+- expandedContext: { key_processes, pain_points, target_kpis, risk_areas, data_landscape, standard_workflows, integrations }
 
-3. Use real enterprise logic.  
-4. Do NOT invent niche systems; stay within typical enterprise patterns.  
-5. Always tie back to strategic goals.  
+Rules:
+1. Use cases must align with:
+   • the industry,
+   • the functional area,
+   • the strategic goals,
+   • the constraints.
+2. Each use case must contain:
+   - title (short, specific)
+   - description (2–3 sentences)
+   - problem_addressed
+   - required_inputs (subset of data_landscape)
+   - workflow_fit (from standard_workflows)
+   - expected_kpi_impact
+   - risks_or_limitations
+   - enterprise_integrations (subset of integrations)
+   - business_value: low | medium | high
+   - complexity: low | medium | high
+   - time_to_value: short | medium | long
+3. Keep logic enterprise-grade: no niche systems, tie each use case to strategic goals.
+4. Be specific and actionable; avoid generic AI statements.
 `);
 
   const userMessage = new HumanMessage(
-    "Generate the use cases from expanded context: " +
-    JSON.stringify(state.expandedContext)
+    "Generate the use cases based on the full context:\n" +
+    JSON.stringify({
+      businessContext: state.businessContext,
+      expandedContext: state.expandedContext
+    })
   );
 
   try {

@@ -42,20 +42,23 @@ export const printWelcome = () => {
 
   printEmptyLine();
 
-  printSection("It translates your request into a structured portfolio of AI use cases — prioritized by business value, feasibility, and domain relevance:");
-  printLine(`${chalk.dim("1.")} Describe your task, industry, and objective.`);
-  printLine(`${chalk.dim("2.")} The interpretation agent extracts structured parameters.`);
-  printLine(`${chalk.dim("3.")} The context expansion agent adds KPIs, workflows, and risks.`);
-  printLine(`${chalk.dim("4.")} The use case generation agent proposes relevant ideas.`);
-  printLine(`${chalk.dim("5.")} The portfolio orchestrator organizes everything into a clean list.`);
+  printSection("This tool turns your request into a structured portfolio of AI use cases, prioritized by business value, feasibility, and domain fit.");
+  printEmptyLine();
+
+  printSection("How it works:");
+  printLine(`${chalk.dim("1.")} You provide the task, industry, and objective.`);
+  printLine(`${chalk.dim("2.")} The interpretation agent extracts key parameters.`);
+  printLine(`${chalk.dim("3.")} The context agent expands KPIs, workflows, and risks.`);
+  printLine(`${chalk.dim("4.")} The generation agent creates concrete use cases.`);
+  printLine(`${chalk.dim("5.")} The orchestrator compiles everything into a clear portfolio.`);
 
   printEmptyLine();
 
   printLine(chalk.gray("Example queries:"));
-  printLine(chalk.gray("* Banking: improving efficiency of credit analysts."));
-  printLine(chalk.gray("* Green energy: workflow optimization and mitigating operational risks."));
-  printLine(chalk.gray("* Manufacturing: computer vision for quality control and predictive maintenance."));
-  printLine(chalk.gray("* E-commerce: sales automation with personalization and recommendations."));
+  printLine(chalk.gray("* Banking: boost credit-risk assessment and reduce manual analyst workload."));
+  printLine(chalk.gray("* Green energy: optimize turbine/solar workflows and lower operational risk."));
+  printLine(chalk.gray("* Manufacturing: improve quality control and enable predictive maintenance."));
+  printLine(chalk.gray("* E-commerce: automate sales funnels with personalization and smarter recommendations."));
 
   printEmptyLine();
 }
