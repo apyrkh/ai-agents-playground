@@ -2,9 +2,9 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ChatOpenAI } from "@langchain/openai";
 
 const GEMINI_MODELS = {
-  FLASH_LITE: "gemini-2.5-flash-lite",
-  FLASH: "gemini-2.5-flash",
-  PRO: "gemini-2.5-pro",
+  FLASH_LITE: "gemini-3.1-flash-lite",
+  FLASH: "gemini-3-flash-preview",
+  PRO: "gemini-3.1-pro-preview",
 }
 
 const getGemini = () => {
@@ -12,6 +12,7 @@ const getGemini = () => {
   if (!apiKey) return null;
 
   const model = GEMINI_MODELS[process.env.GEMINI_MODEL as keyof typeof GEMINI_MODELS] || GEMINI_MODELS.FLASH_LITE;
+  console.log(`Using Gemini model: ${model}`);
 
   return new ChatGoogleGenerativeAI({ apiKey, model });
 };

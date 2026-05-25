@@ -1,40 +1,14 @@
 # AI Agents Playground
 
-<p align="center">
-  <img src="./docs/diagram.png" width="600" alt="Architecture diagram" />
-</p>
+A collection of hands-on AI/LLM projects exploring agents, graphs, and multi-model workflows.
 
-## Agentic AI Demo
+## Projects
 
-This project showcases a lightweight multi-agent setup for structured information extraction and AI use-case generation from natural language inputs.
-Agents parse the user request, extract intents, work with prepared/mock data, and produce a structured output — from quick wins to strategic bets.
+| #   | Project                                                               |
+| --- | ---------                                                             |
+| 01  | [Multi-Agent Extraction](./01_multi_agent_extraction/)                |
+| 02  | [Stop Prompting, Start Graphing](./02_stop_prompting_start_graphing/) |
 
-Designed to demonstrate agentic capabilities without heavy infra (no RAG, no vector DB).
+## Structure
 
-## 📦 How to Run the Demo
-
-1. setup `.evn`
-```
-GOOGLE_API_KEY=YOUR_API_KEY_HERE
-OPENAI_API_KEY=YOUR_OPENAI_API_KEY_HERE
-```
-
-2.  Install dependencies:
-    `npm install`
-
-3.  Run demo:
-    `npm run demo`
-
-## 🔑 OpenAI (ChatGPT) API Key
-
-1.  **Go to:**
-    `https://platform.openai.com/api-keys`
-
-2.  **Create** a new API key.
-
-## 🔑 Gemini (Google) API Key
-
-1.  **Go to:**
-    `https://aistudio.google.com/app/apikey`
-
-2.  **Create** a new API key.
+Each subdirectory is a self-contained project with its own `package.json`, `.env.sample`, and `README.md`.
