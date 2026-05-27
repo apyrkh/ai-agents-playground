@@ -1,8 +1,8 @@
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { z } from "zod";
 import { model } from "../../config/model.ts";
-import type { AuditEntry, Requirements, TechDesignState } from "../../state.ts";
-import { printNodeTitle, printRequirements } from "../../utils/io.ts";
+import { Phase, type AuditEntry, type Question, type Requirements, type TechDesignState } from "../../state.ts";
+import { printNodeTitle, printOpenQuestions, printRequirements } from "../../utils/io.ts";
 import { parseJsonResponse, streamWithThoughts } from "../../utils/llm.ts";
 import { SYSTEM_PROMPT } from "./prompt.ts";
 
@@ -11,7 +11,7 @@ const LLMOutputSchema = z.object({
   constraints: z.array(z.string()).max(3),
   nfrs: z.array(z.string()).max(3),
   assumptions: z.array(z.string()).max(4),
-  questions: z.array(z.string()).max(3).default([]),
+  questions: z.array(z.string()).max(3),
 });
 
 export const EXTRACT_REQUIREMENTS_NODE = "extractRequirements";
@@ -35,14 +35,27 @@ export const extractRequirements = async (
   };
   printRequirements(requirements);
 
+  const questions: Question[] = parsed.questions.map((text, i) => ({
+    id: `q${i + 1}`,
+    text,
+    status: "open",
+    answer: null,
+  }));
+
+  if (questions.length > 0) {
+    printOpenQuestions(questions);
+  }
+
   const audit: AuditEntry = {
     node: EXTRACT_REQUIREMENTS_NODE,
     timestamp: new Date().toISOString(),
-    decision: `Extracted ${requirements.features.length} features, ${requirements.constraints.length} constraints, ${requirements.nfrs.length} nfrs, ${requirements.assumptions.length} assumptions`,
+    decision: `Extracted ${requirements.features.length} features, ${requirements.constraints.length} constraints, ${requirements.nfrs.length} nfrs, ${requirements.assumptions.length} assumptions, ${questions.length} blocking question(s)`,
   };
 
   return {
     auditLog: [audit],
     requirements,
+    questions,
+    phase: questions.length > 0 ? Phase.CLARIFYING : Phase.STACK_PROPOSAL,
   };
 };

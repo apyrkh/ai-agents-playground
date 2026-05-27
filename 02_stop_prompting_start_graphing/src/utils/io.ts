@@ -1,5 +1,5 @@
 import ansis from "ansis";
-import type { Requirements } from "../state.ts";
+import type { Question, Requirements } from "../state.ts";
 
 const SAMPLE_BRIEFS = [
   "I want a web-chat for 10 employees",
@@ -33,6 +33,23 @@ export const readUserBrief = async (): Promise<string> => {
   return text;
 };
 
+export const readAnswers = async (questions: Question[]): Promise<string[]> => {
+  const open = questions.filter((q) => q.status === "open");
+  const answers: string[] = [];
+
+  for (const q of open) {
+    printLabel(`${ansis.bold.white(q.text)}\n> `);
+    let answer = "";
+    for await (const line of stdinLines()) {
+      answer = line.trim();
+      break;
+    }
+    answers.push(answer);
+  }
+
+  return answers;
+};
+
 export const printNodeTitle = (label: string): void => {
   console.log();
   console.log(ansis.bold.cyan(`${label}...`));
@@ -52,6 +69,12 @@ export const printRequirements = (req: Requirements): void => {
   console.log();
   printBlock("assumptions", req.assumptions);
   console.log();
+};
+
+export const printOpenQuestions = (questions: Question[]): void => {
+  const open = questions.filter((q) => q.status === "open");
+
+  printBlock("open questions", open.map((q) => q.text));
 };
 
 const printLabel = (text: string): void => {
