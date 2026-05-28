@@ -1,5 +1,5 @@
 import ansis from "ansis";
-import type { Question, Requirements } from "../state.ts";
+import type { Question, Requirements, StackChoice } from "../state.ts";
 
 const SAMPLE_BRIEFS = [
   "I want a web-chat for 10 employees",
@@ -75,6 +75,28 @@ export const printOpenQuestions = (questions: Question[]): void => {
   const open = questions.filter((q) => q.status === "open");
 
   printBlock("open questions", open.map((q) => q.text));
+};
+
+export const printProposedStack = (stack: StackChoice[]): void => {
+  if (stack.length === 0) {
+    console.log(`${ansis.bold.white("proposed stack")} (${stack.length})`);
+    console.log(`  ${ansis.dim("(none)")}`);
+    console.log();
+    return;
+  }
+
+  stack.forEach((choice) => {
+    const version = choice.version ? ` v${choice.version}` : "";
+    console.log(`${ansis.bold.white(choice.category)}: ${choice.selected}${ansis.dim(version)}`);
+    console.log(`  rationale: ${ansis.dim(choice.rationale)}`);
+    if (choice.alternatives.length > 0) {
+      console.log(`  alternatives:`);
+      choice.alternatives.forEach((it) => {
+        console.log(`    ${ansis.dim(`• ${it.name} — ${it.rejectedBecause}`)}`);
+      });
+    }
+    console.log();
+  });
 };
 
 const printLabel = (text: string): void => {

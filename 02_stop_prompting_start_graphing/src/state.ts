@@ -1,9 +1,11 @@
+import type { BaseMessage } from "@langchain/core/messages";
 import { Annotation } from "@langchain/langgraph";
 
 export enum Phase {
   INTAKE = "INTAKE",
   CLARIFYING = "CLARIFYING",
   STACK_PROPOSAL = "STACK_PROPOSAL",
+  AWAITING_APPROVAL = "AWAITING_APPROVAL",
 }
 
 export interface AuditEntry {
@@ -24,6 +26,25 @@ export interface Question {
   text: string;
   status: "open" | "answered";
   answer: string | null;
+}
+
+export const STACK_CATEGORIES = [
+  "frontend",
+  "backend",
+  "database",
+  "infra",
+  "auth",
+  "observability",
+] as const;
+
+export type StackCategory = (typeof STACK_CATEGORIES)[number];
+
+export interface StackChoice {
+  category: StackCategory;
+  selected: string;
+  version: string | null;
+  rationale: string;
+  alternatives: { name: string; rejectedBecause: string }[];
 }
 
 export const TechDesignAnnotation = Annotation.Root({
@@ -58,6 +79,16 @@ export const TechDesignAnnotation = Annotation.Root({
       next.forEach(it => map.set(it.id, it));
       return [...map.values()];
     },
+    default: () => [],
+  }),
+
+  proposalMessages: Annotation<BaseMessage[]>({
+    reducer: (_, next) => next,
+    default: () => [],
+  }),
+
+  proposedStack: Annotation<StackChoice[]>({
+    value: (_, next) => next,
     default: () => [],
   }),
 });
