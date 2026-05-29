@@ -8,6 +8,7 @@ export enum Phase {
   AWAITING_APPROVAL = "AWAITING_APPROVAL",
   STACK_REVISION = "STACK_REVISION",
   DESIGN_GENERATION = "DESIGN_GENERATION",
+  DONE = "DONE",
 }
 
 export interface AuditEntry {
@@ -52,6 +53,11 @@ export interface StackChoice {
 export interface Approval {
   status: "pending" | "approved" | "rejected";
   feedback: string | null;
+}
+
+export interface DesignDoc {
+  title: string;
+  sections: { title: string; content: string }[];
 }
 
 export const TechDesignAnnotation = Annotation.Root({
@@ -107,6 +113,11 @@ export const TechDesignAnnotation = Annotation.Root({
   revisionCount: Annotation<Record<string, number>>({
     reducer: (prev, next) => ({ ...prev, ...next }),
     default: () => ({}),
+  }),
+
+  finalDesignDoc: Annotation<DesignDoc | null>({
+    value: (_, next) => next,
+    default: () => null,
   }),
 });
 

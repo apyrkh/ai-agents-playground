@@ -58,6 +58,13 @@ const extractParts = (chunk: AIMessageChunk): { thought: string; text: string } 
 
 const stripJsonFences = (raw: string): string => {
   const trimmed = raw.trim();
-  const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
-  return fenced && fenced[1] ? fenced[1].trim() : trimmed;
+
+  const jsonFenced = trimmed.match(/```json\s*([\s\S]*?)\s*```/i);
+  if (jsonFenced && jsonFenced[1]) return jsonFenced[1].trim();
+
+  const start = trimmed.indexOf("{");
+  const end = trimmed.lastIndexOf("}");
+  if (start !== -1 && end > start) return trimmed.slice(start, end + 1);
+
+  return trimmed;
 };

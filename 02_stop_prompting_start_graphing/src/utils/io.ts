@@ -1,5 +1,5 @@
 import ansis from "ansis";
-import type { Question, Requirements, StackChoice } from "../state.ts";
+import type { DesignDoc, Question, Requirements, StackChoice } from "../state.ts";
 
 const SAMPLE_BRIEFS = [
   "I want a web-chat for 10 employees",
@@ -123,6 +123,59 @@ export const printProposedStack = (stack: StackChoice[]): void => {
     console.log();
   });
 };
+
+export const printDesignDoc = async (doc: DesignDoc) => {
+  if (doc.sections.length === 0) {
+    console.log(`${ansis.bold.white("design document")} (0)`);
+    console.log(`  ${ansis.dim("(none)")}`);
+    console.log();
+    return;
+  }
+
+  const sectionsMarkdown = doc.sections
+    .map((section) => `## ${section.title}\n\n${section.content}`)
+    .join("\n\n---\n\n");
+  const fullMarkdown = `# ${doc.title}\n\n${sectionsMarkdown}`;
+
+  const terminalOutput = Bun.markdown.ansi(fullMarkdown);
+  console.log(terminalOutput);
+  console.log();
+
+  // === Markdown output
+  const mdPath = "design-doc.md";
+  await Bun.write(mdPath, fullMarkdown);
+  console.log(ansis.green(`✔ Markdown saved: `) + ansis.underline(mdPath));
+
+  // === HTML output
+  const htmlContent = Bun.markdown.html(fullMarkdown);
+  const htmlPath = "design-doc.html";
+  
+  const htmlWrapper = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${doc.title} - Agent Design Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.0/github-markdown.min.css">
+  <style>
+    body {
+      box-sizing: border-box;
+      min-width: 200px;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 45px;
+      background-color: #0d1117;
+    }
+  </style>
+</head>
+<body class="markdown-body">
+  ${htmlContent}
+</body>
+</html>`;
+
+  await Bun.write(htmlPath, htmlWrapper);
+  console.log(ansis.green(`✔ HTML saved: `) + ansis.underline(htmlPath));
+}
 
 const printLabel = (text: string): void => {
   process.stdout.write(ansis.bold.white(text));
