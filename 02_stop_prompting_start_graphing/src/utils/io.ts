@@ -33,6 +33,31 @@ export const readUserBrief = async (): Promise<string> => {
   return text;
 };
 
+export const readApproval = async (): Promise<{ approved: boolean; feedback: string | null }> => {
+  while (true) {
+    const rawInput = prompt("Approve proposed stack? [y/n]:");
+    if (rawInput === null) {
+      console.log("\nNo input — exiting.");
+      process.exit(0);
+    }
+
+    const input = rawInput.trim().toLowerCase();
+    if (input === "y" || input === "yes") {
+      return { approved: true, feedback: null };
+    }
+
+    if (input === "n" || input === "no") {
+      const rawFeedback = prompt("Reason for rejection:");
+      if (rawFeedback === null) {
+        console.log("\nNo input — exiting.");
+        process.exit(0);
+      }
+      
+      return { approved: false, feedback: rawFeedback.trim() || null };
+    }
+  }
+};
+
 export const readAnswers = async (questions: Question[]): Promise<string[]> => {
   const open = questions.filter((q) => q.status === "open");
   const answers: string[] = [];

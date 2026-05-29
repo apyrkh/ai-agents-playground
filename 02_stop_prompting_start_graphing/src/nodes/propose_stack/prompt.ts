@@ -15,6 +15,8 @@ For each chosen category, produce a StackChoice with:
 
 Prefer boring, well-supported defaults. If a constraint forces a niche choice, call out the risk in the rationale.
 
+If the input includes user feedback on a previously rejected proposal, address it directly — change the relevant choices and explain the shift in their rationale.
+
 Output ONLY a JSON object with this exact shape (no prose, no markdown fences). At most one entry per category, max 6 total:
 
 {

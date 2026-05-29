@@ -23,7 +23,10 @@ export const PROPOSE_STACK_NODE = "proposeStack";
 export const proposeStack = async (
   state: TechDesignState,
 ): Promise<Partial<TechDesignState>> => {
-  printNodeTitle("Proposing Tech Stack");
+  const isRevision = state.approval.status === "rejected";
+  const attempt = isRevision ? (state.revisionCount[PROPOSE_STACK_NODE] ?? 0) + 1 : 0;
+
+  printNodeTitle(isRevision ? `Revising Tech Stack (attempt ${attempt})` : "Proposing Tech Stack");
 
   const messages: BaseMessage[] = [...state.proposalMessages];
   if (messages.length === 0) {
@@ -32,6 +35,13 @@ export const proposeStack = async (
       new HumanMessage(
         `${formatRequirements(state.requirements)}\n\n${formatAnsweredQuestions(state.questions)}`
       ),
+    );
+  }
+
+  if (messages.length > 0 && isRevision) {
+    const feedback = state.approval.feedback ?? "(no reason given)";
+    messages.push(
+      new HumanMessage(`User rejected the previous proposal. Feedback: ${feedback}. Please revise the stack and return JSON in the same shape.`)
     );
   }
 
@@ -55,6 +65,12 @@ export const proposeStack = async (
       proposalMessages: messages,
       proposedStack: stack,
       phase: Phase.AWAITING_APPROVAL,
+      ...(isRevision && {
+        revisionCount: {
+          ...state.revisionCount,
+          [PROPOSE_STACK_NODE]: attempt
+        }
+      }),
     };
 
   } catch (error) {
