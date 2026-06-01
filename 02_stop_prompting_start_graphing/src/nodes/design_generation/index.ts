@@ -2,8 +2,8 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { z } from "zod";
 import { model } from "../../config/model.ts";
 import { Phase, type AuditEntry, type DesignDoc, type Question, type Requirements, type StackChoice, type TechDesignState } from "../../state.ts";
-import { printDesignDoc, printNodeTitle } from "../../utils/io.ts";
-import { parseJsonResponse, streamWithThoughts } from "../../utils/llm.ts";
+import { createNodeSpinner, printDesignDoc } from "../../utils/io.ts";
+import { parseJsonResponse, streamText } from "../../utils/llm.ts";
 import { SYSTEM_PROMPT } from "./prompt.ts";
 
 const LLMOutputSchema = z.object({
@@ -18,7 +18,8 @@ export const DESIGN_GENERATION_NODE = "designGeneration";
 export const designGeneration = async (
   state: TechDesignState,
 ): Promise<Partial<TechDesignState>> => {
-  printNodeTitle("Generating Tech Design");
+  const spinner = createNodeSpinner();
+  spinner.start("Generating Tech Design");
 
   const humanContext = [
     formatRequirements(state.requirements),
@@ -26,11 +27,13 @@ export const designGeneration = async (
     formatStack(state.proposedStack),
   ].join("\n\n");
 
-  const raw = await streamWithThoughts(model, [
+  const raw = await streamText(model, [
     new SystemMessage(SYSTEM_PROMPT),
     new HumanMessage(humanContext),
   ]);
   const parsed = parseJsonResponse(raw, LLMOutputSchema);
+
+  spinner.stop("Generating Tech Design");
 
   const designDoc: DesignDoc = { title: parsed.title, sections: parsed.sections };
   await printDesignDoc(designDoc);

@@ -2,8 +2,8 @@ import { AIMessage, HumanMessage, SystemMessage, type BaseMessage } from "@langc
 import { z } from "zod";
 import { model } from "../../config/model.ts";
 import { Phase, STACK_CATEGORIES, type AuditEntry, type Question, type Requirements, type StackChoice, type TechDesignState } from "../../state.ts";
-import { printNodeTitle, printProposedStack } from "../../utils/io.ts";
-import { parseJsonResponse, streamWithThoughts } from "../../utils/llm.ts";
+import { createNodeSpinner, printProposedStack } from "../../utils/io.ts";
+import { parseJsonResponse, streamText } from "../../utils/llm.ts";
 import { SYSTEM_PROMPT } from "./prompt.ts";
 
 const LLMOutputSchema = z.object({
@@ -26,7 +26,8 @@ export const proposeStack = async (
   const isRevision = state.approval.status === "rejected";
   const attempt = isRevision ? (state.revisionCount[PROPOSE_STACK_NODE] ?? 0) + 1 : 0;
 
-  printNodeTitle(isRevision ? `Revising Tech Stack (attempt ${attempt})` : "Proposing Tech Stack");
+  const spinner = createNodeSpinner();
+  spinner.start(isRevision ? `Revising Tech Stack (attempt ${attempt})` : "Proposing Tech Stack");
 
   const messages: BaseMessage[] = [...state.proposalMessages];
   if (messages.length === 0) {
@@ -46,8 +47,10 @@ export const proposeStack = async (
   }
 
   try {
-    const raw = await streamWithThoughts(model, messages);
+    const raw = await streamText(model, messages);
     const parsed = parseJsonResponse(raw, LLMOutputSchema);
+
+    spinner.stop(isRevision ? `Revising Tech Stack (attempt ${attempt})` : "Proposing Tech Stack");
 
     const stack: StackChoice[] = parsed.stack;
     printProposedStack(stack);
@@ -74,8 +77,8 @@ export const proposeStack = async (
     };
 
   } catch (error) {
+    spinner.error("Failed to generate tech stack");
     console.error(`[${PROPOSE_STACK_NODE}] Error during tech stack generation:`, error);
-    // here can be returned state with error phase or throw it further, depends on graph logic
     throw error;
   }
 };

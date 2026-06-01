@@ -1,27 +1,17 @@
 import type { AIMessageChunk, BaseMessage } from "@langchain/core/messages";
 import type { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import type { ZodType } from "zod";
-import { printThought } from "./io.ts";
 
-export const streamWithThoughts = async (
+export const streamText = async (
   llm: BaseChatModel,
   messages: BaseMessage[],
 ): Promise<string> => {
   const stream = await llm.stream(messages);
-
   let answerBuf = "";
-  let hasPrintedThought = false;
-
   for await (const chunk of stream) {
-    const { thought, text } = extractParts(chunk);
-    if (thought) {
-      printThought(thought);
-      hasPrintedThought = true;
-    }
+    const { text } = extractParts(chunk);
     if (text) answerBuf += text;
   }
-  if (hasPrintedThought) process.stdout.write("\n");
-
   return answerBuf;
 };
 

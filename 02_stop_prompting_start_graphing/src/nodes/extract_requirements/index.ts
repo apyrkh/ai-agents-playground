@@ -2,8 +2,8 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { z } from "zod";
 import { model } from "../../config/model.ts";
 import { Phase, type AuditEntry, type Question, type Requirements, type TechDesignState } from "../../state.ts";
-import { printNodeTitle, printOpenQuestions, printRequirements } from "../../utils/io.ts";
-import { parseJsonResponse, streamWithThoughts } from "../../utils/llm.ts";
+import { createNodeSpinner, printOpenQuestions, printRequirements } from "../../utils/io.ts";
+import { parseJsonResponse, streamText } from "../../utils/llm.ts";
 import { SYSTEM_PROMPT } from "./prompt.ts";
 
 const LLMOutputSchema = z.object({
@@ -19,13 +19,16 @@ export const EXTRACT_REQUIREMENTS_NODE = "extractRequirements";
 export const extractRequirements = async (
   state: TechDesignState,
 ): Promise<Partial<TechDesignState>> => {
-  printNodeTitle("Analyzing & Structuring Requirements");
+  const spinner = createNodeSpinner();
+  spinner.start("Analyzing & Structuring Requirements");
 
-  const raw = await streamWithThoughts(model, [
+  const raw = await streamText(model, [
     new SystemMessage(SYSTEM_PROMPT),
     new HumanMessage(state.rawRequirements),
   ]);
   const parsed = parseJsonResponse(raw, LLMOutputSchema);
+
+  spinner.stop("Analyzing & Structuring Requirements");
 
   const requirements: Requirements = {
     features: parsed.features,
