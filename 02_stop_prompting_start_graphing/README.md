@@ -9,7 +9,11 @@ Stack:
 
 ## Setup
 
-```bash
+```sh
+# Install Bun (if not installed)
+curl -fsSL https://bun.sh/install | bash
+
+#
 cp .env.sample .env
 bun install
 bun run demo
